@@ -6,32 +6,32 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
- *
- * TODO might be needed an interface (contract).
+ * Service to calculate statistics
+ * Note: might be needed an interface(contract) for real functionality.
  */
 public class StatisticsService {
     private static final String CHARSET_NAME = "utf8";
     private static final String WORDLIKE_PATTERN = "\\s+|\r\n|[\n\r\u2028\u2029\u0085]";
-    private static final String PUNCTUATION_MARKS = ".,!?;:-";
-    private static final String EMPTY_STRING = "";
+    private static final String PUNCTUATION_MARKS = ".,!?;:";
+    private static final char DASH = '-';
 
     /**
      * @param filePath file to analyze for words/punctuation marks frequency
-     * @return TODO
+     * @return statistics of word/punctuation marks occurrence frequency.
      */
-    // TODO check if Long/Integer
-    public Map<String, Long> calculateStatistics(Path filePath) throws IOException {
+    public Map<String, Integer> calculateStatistics(Path filePath) throws IOException {
         // validate parameter
         File file = filePath.toFile();
         if (!file.exists()) {
             throw new ValidationException("There is no file named '" + filePath.getFileName() + "'");
         }
 
-        Map<String, Long> statisticsMap = new HashMap<>();
+        Map<String, Integer> statisticsMap = new HashMap<>();
 
         try (FileInputStream inputStream = new FileInputStream(file);
              Scanner scanner = new Scanner(inputStream, CHARSET_NAME);) {
@@ -43,27 +43,38 @@ public class StatisticsService {
                 throw scanner.ioException();
             }
         }
-        // TODO
         return statisticsMap;
     }
 
-    private void processLineAndEnrichStatistics(String wordlike, Map<String, Long> statisticsMap) {
+    private void processLineAndEnrichStatistics(String wordlike, Map<String, Integer> statisticsMap) {
         char[] wordlikeArray = wordlike.toCharArray();
+        if (wordlikeArray.length == 1 && DASH == wordlikeArray[0]) {
+            addWordToMap(String.valueOf(DASH), statisticsMap);
+            return;
+        }
         StringBuilder currentWordBuilder = new StringBuilder();
         for (Character currentChar : wordlikeArray) {
             if (PUNCTUATION_MARKS.contains(String.valueOf(currentChar))) {
                 if (currentWordBuilder.length() > 0) {
-                    // TODO put word to map
-                    // clean up the word
+                    addWordToMap(currentWordBuilder.toString(), statisticsMap);
+                    // clean up word container
                     currentWordBuilder = new StringBuilder();
                 }
-                // TODO put p-mark to map
+                addWordToMap(String.valueOf(currentChar), statisticsMap);
             } else { //this is alphanumeric char
                 currentWordBuilder.append(currentChar);
             }
         }
         if (currentWordBuilder.length() > 0) {
-            // TODO put word to map
+            addWordToMap(currentWordBuilder.toString(), statisticsMap);
         }
+    }
+
+    private void addWordToMap(String word, Map<String, Integer> statisticsMap) {
+        Integer value = statisticsMap.get(word);
+        if (value == null) {
+            value = 0;
+        }
+        statisticsMap.put(word, value + 1);
     }
 }
