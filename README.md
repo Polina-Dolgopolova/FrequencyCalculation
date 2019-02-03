@@ -18,7 +18,7 @@ Use standard libraries only.
 JAR file will built application is contained in  
 `output/TODO.jar`  
 To run it please use  
-`java -jar TODO.jar <path to file for processing>`  
+`$ java -jar frequencycalculation.jar <path to file for processing>`  
  
  
 
