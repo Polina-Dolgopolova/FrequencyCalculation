@@ -6,9 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  *
@@ -16,6 +15,9 @@ import java.util.Scanner;
  */
 public class StatisticsService {
     private static final String CHARSET_NAME = "utf8";
+    private static final String WORDLIKE_PATTERN = "\\s+|\r\n|[\n\r\u2028\u2029\u0085]";
+    private static final String PUNCTUATION_MARKS = ".,!?;:-";
+    private static final String EMPTY_STRING = "";
 
     /**
      * @param filePath file to analyze for words/punctuation marks frequency
@@ -29,12 +31,12 @@ public class StatisticsService {
             throw new ValidationException("There is no file named '" + filePath.getFileName() + "'");
         }
 
-        Map<String, Long> statisticsMap = new HashMap();
+        Map<String, Long> statisticsMap = new HashMap<>();
 
         try (FileInputStream inputStream = new FileInputStream(file);
              Scanner scanner = new Scanner(inputStream, CHARSET_NAME);) {
-            while (scanner.hasNextLine()) {
-                processLineAndEnrichStatistics(scanner.nextLine(), statisticsMap);
+            while (scanner.hasNext(WORDLIKE_PATTERN)) {
+                processLineAndEnrichStatistics(scanner.next(WORDLIKE_PATTERN), statisticsMap);
             }
             // process suppressed exceptions
             if (scanner.ioException() != null) {
@@ -45,7 +47,23 @@ public class StatisticsService {
         return statisticsMap;
     }
 
-    private void processLineAndEnrichStatistics(String line, Map<String, Long> statisticsMap) {
-
+    private void processLineAndEnrichStatistics(String wordlike, Map<String, Long> statisticsMap) {
+        char[] wordlikeArray = wordlike.toCharArray();
+        StringBuilder currentWordBuilder = new StringBuilder();
+        for (Character currentChar : wordlikeArray) {
+            if (PUNCTUATION_MARKS.contains(String.valueOf(currentChar))) {
+                if (currentWordBuilder.length() > 0) {
+                    // TODO put word to map
+                    // clean up the word
+                    currentWordBuilder = new StringBuilder();
+                }
+                // TODO put p-mark to map
+            } else { //this is alphanumeric char
+                currentWordBuilder.append(currentChar);
+            }
+        }
+        if (currentWordBuilder.length() > 0) {
+            // TODO put word to map
+        }
     }
 }

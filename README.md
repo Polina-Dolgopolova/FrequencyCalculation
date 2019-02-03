@@ -11,7 +11,7 @@ Use standard libraries only.
 2. Use ascending sort;
 3. File name to analyze is defined as a parameter for the application;
 4. TODO SLA
-5.
+5. Words comparison is case sensitive;
 
 ## How to run
 JAR file will built application is contained in  
