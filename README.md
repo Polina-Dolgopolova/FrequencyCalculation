@@ -12,6 +12,7 @@ Use standard libraries only.
 3. File name to analyze is defined as a parameter for the application;
 4. TODO SLA
 5. Words comparison is case sensitive;
+6. TODO algorithm of sorting
 
 ## How to run
 JAR file will built application is contained in  

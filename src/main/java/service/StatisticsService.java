@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * Service to calculate statistics
@@ -16,7 +17,7 @@ import java.util.Scanner;
  */
 public class StatisticsService {
     private static final String CHARSET_NAME = "utf8";
-    private static final String WORDLIKE_PATTERN = "\\s+|\r\n|[\n\r\u2028\u2029\u0085]";
+    private static final Pattern WORDLIKE_PATTERN = Pattern.compile("\\s+|\r\n|[\n\r\u2028\u2029\u0085]");
     private static final String PUNCTUATION_MARKS = ".,!?;:";
     private static final char DASH = '-';
 
@@ -34,13 +35,13 @@ public class StatisticsService {
         Map<String, Integer> statisticsMap = new HashMap<>();
 
         try (FileInputStream inputStream = new FileInputStream(file);
-             Scanner scanner = new Scanner(inputStream, CHARSET_NAME);) {
-            while (scanner.hasNext(WORDLIKE_PATTERN)) {
-                processLineAndEnrichStatistics(scanner.next(WORDLIKE_PATTERN), statisticsMap);
+             Scanner scanner = new Scanner(inputStream, CHARSET_NAME).useDelimiter(WORDLIKE_PATTERN);) {
+            while (scanner.hasNext()) {
+                processLineAndEnrichStatistics(scanner.next(), statisticsMap);
             }
             // process suppressed exceptions
             if (scanner.ioException() != null) {
-                throw scanner.ioException();
+                throw new RuntimeException("", scanner.ioException());
             }
         }
         return statisticsMap;

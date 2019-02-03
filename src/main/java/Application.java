@@ -13,21 +13,26 @@ public class Application {
 
     public static void main(String[] args) {
         if (args.length < 1) {
-            throw new ValidationException("No needed argument defined");
+            System.out.println("No file path argument defined");
         }
         Path filePath = Paths.get(args[0]);
 
         try {
             StatisticsEntry[] sortedStatistics = sortStatistics(statisticsService.calculateStatistics(filePath));
-            // TODO check on emptiness
+            if (sortedStatistics.length == 0) {
+                System.out.println("File " + filePath.getFileName() + " is empty, no data available.");
+                return;
+            }
+
             System.out.println("===================== " + filePath.getFileName() + " Statistics =====================");
-            System.out.println("Word | Length | Frequency");
+            System.out.println("Frequency | Word | Length");
 
             Stream.of(sortedStatistics).forEach(entry ->
-                    System.out.println(entry.getWord() + " | " + entry.getWord().length() + " | " + entry.getCount()));
+                    System.out.println(entry.getCount() + " | " + entry.getWord() + " | " + entry.getWord().length()));
 
-        } catch (IOException ex) {
-            // TODO
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("An error occurred while calculating statistics");
         }
     }
 
