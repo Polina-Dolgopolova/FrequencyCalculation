@@ -10,7 +10,7 @@ Use standard libraries only.
 1. Words length is mentioned but not used for output requirements: adding it to output;
 2. Use ascending sort;
 3. File name to analyze is defined as a parameter for the application;
-4. 
+4. TODO SLA
 5.
 
 ## How to run
