@@ -9,22 +9,28 @@ Use standard libraries only.
 ## Assumptions   
 1. Words length is mentioned but not used for output requirements: adding it to output;
 2. Use ascending sort;
-3. File name to analyze is defined as a parameter for the application;
-4. TODO SLA
+3. File name to analyze is defined as a parameter for the application in possible file formats;
+4. SLA are not defined in requirements, so assume there are none.
+Common sense however says that the algorithm should be as optimal as possible.
+Please see inline code comments for details.
 5. Words comparison is case sensitive;
-6. TODO algorithm of sorting
+6. Inner sorting is used as well: to order words with same frequency; 
 
 ## How to run
-JAR file will built application is contained in  
-`output/TODO.jar`  
-To run it please use  
+Application JAR file is contained in  
+`output/frequencycalculation.jar`  
+  
+To run it without build please use  
 `$ java -jar frequencycalculation.jar <path to file for processing>`  
+
+The project's Gradlew wrapper could be used to build or test application.  
+Please use the following accordingly  
+`gradlew build`  
+`gradlew test`
+
+Sunny day scenario output looks like the following  
+`===================== <file name> statistics =====================`  
+`Frequency | Word | Length`  
+`<statistics itself>`  
+`Time to calculate: <time to calculate>`  
  
- 
-
-
-
-
-
-
-

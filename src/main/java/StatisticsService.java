@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
- * Service to calculate statistics
+ * Service to calculate and sort statistics.
  * Note: might be needed an interface(contract) for real functionality.
  */
 class StatisticsService {
