@@ -1,6 +1,6 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
+import java.util.TreeSet;
 
 public class Application {
     private static StatisticsService statisticsService = new StatisticsService();
@@ -14,8 +14,8 @@ public class Application {
         try {
             long start = System.currentTimeMillis();
 
-            StatisticsEntry[] sortedStatistics = statisticsService.sortStatistics(statisticsService.calculateStatistics(filePath));
-            if (sortedStatistics.length == 0) {
+            TreeSet<StatisticsEntry> sortedStatistics = statisticsService.sortStatistics(statisticsService.calculateStatistics(filePath));
+            if (sortedStatistics.size() == 0) {
                 System.out.println("File " + filePath.getFileName() + " is empty, no data available.");
                 return;
             }
@@ -23,7 +23,7 @@ public class Application {
             System.out.println("===================== " + filePath.getFileName() + " statistics =====================");
             System.out.println("Frequency | Word | Length");
 
-            Stream.of(sortedStatistics).forEach(entry ->
+            sortedStatistics.forEach(entry ->
                     System.out.println(entry.getCount() + " | " + entry.getWord() + " | " + entry.getWord().length()));
 
             System.out.println("Time to calculate: " + (System.currentTimeMillis() - start));

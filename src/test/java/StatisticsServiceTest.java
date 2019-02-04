@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +18,7 @@ public class StatisticsServiceTest {
         Path filePath = Paths.get("./src/test/resources/regular.txt");
         Map<String, Integer> resultMap = statisticsService.calculateStatistics(filePath);
 
-        assertThat(resultMap.size()).isEqualTo(9);
+        assertThat(resultMap.size()).isEqualTo(10);
         assertThat(resultMap.get("text1")).isEqualTo(4);
         assertThat(resultMap.get("text2")).isEqualTo(5);
         assertThat(resultMap.get("text3")).isEqualTo(2);
@@ -26,6 +28,7 @@ public class StatisticsServiceTest {
         assertThat(resultMap.get("!")).isEqualTo(2);
         assertThat(resultMap.get("?")).isEqualTo(2);
         assertThat(resultMap.get(";")).isEqualTo(1);
+        assertThat(resultMap.get("-")).isEqualTo(1);
     }
 
     // Ideally some SLA could be tested here. But there are no SLA requirements.
@@ -59,20 +62,38 @@ public class StatisticsServiceTest {
         map.put("?", 2);
         map.put(";", 1);
 
-        StatisticsEntry[] result = statisticsService.sortStatistics(map);
+        TreeSet<StatisticsEntry> result = statisticsService.sortStatistics(map);
 
         assertThat(result).isNotEmpty();
+
+        Iterator<StatisticsEntry> iterator = result.iterator();
+        assertThat(iterator.hasNext()).isTrue();
+
+        StatisticsEntry firstElement = iterator.next();
         // Checking all data for first element
-        assertThat(result[0].getWord()).isEqualTo("!");
-        assertThat(result[0].getCount()).isEqualTo(1);
+        assertThat(firstElement.getWord()).isEqualTo("!");
+        assertThat(firstElement.getCount()).isEqualTo(1);
 
         // checking texts for other elements to verify the order
-        assertThat(result[1].getWord()).isEqualTo(";");
-        assertThat(result[2].getWord()).isEqualTo("text5");
-        assertThat(result[3].getWord()).isEqualTo(".");
-        assertThat(result[4].getWord()).isEqualTo("?");
-        assertThat(result[5].getWord()).isEqualTo("text3");
-        assertThat(result[6].getWord()).isEqualTo("text1");
-        assertThat(result[7].getWord()).isEqualTo("text2");
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next().getWord()).isEqualTo(";");
+
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next().getWord()).isEqualTo("text5");
+
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next().getWord()).isEqualTo(".");
+
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next().getWord()).isEqualTo("?");
+
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next().getWord()).isEqualTo("text3");
+
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next().getWord()).isEqualTo("text1");
+
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next().getWord()).isEqualTo("text2");
     }
 }
