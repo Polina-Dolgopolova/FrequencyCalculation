@@ -84,7 +84,7 @@ class StatisticsService {
     }
 
     TreeSet<StatisticsEntry> sortStatistics(Map<String, Integer> map) {
-        // this approach should provide O(log(n)) complexity for sorting
+        // this approach should provide O(n*log(n)) complexity for sorting
         return map.entrySet().stream()
                 .map(entry -> new StatisticsEntry(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toCollection(TreeSet::new));
